@@ -8,7 +8,7 @@ const typeColor = {
     flying: "#81ecec",
     grass: "#00b894",
     ground: "#EFB549",
-    ghost: "#a55eea",   
+    ghost: "#a55eea",
     ice: "#74b9ff",
     normal: "#95afc0",
     poison: "#6c5ce7",
@@ -19,16 +19,15 @@ const typeColor = {
 const url = "https://pokeapi.co/api/v2/pokemon/";
 const card = document.getElementById("card");
 const btn = document.getElementById("btn");
+const searchBtn = document.querySelector("#search-btn");
+const searchInput = document.querySelector("#search-input");
 
-let getPokeData = () => {
-    let id = Math.floor(Math.random() * 150) + 1;
-    const finalUrl = url + id;
-    fetch(finalUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            generateCard(data);
-        });
-};
+const searchPokemon = searchBtn.addEventListener("click", async () => {
+    const finalUrl = `${url}${searchInput.value}`;
+    const response = await fetch(finalUrl);
+    const data = await response.json();
+    generateCard(data);
+});
 
 let generateCard = (data) => {
     const hp = data.stats[0].base_stat;
@@ -63,9 +62,10 @@ let generateCard = (data) => {
             </div>
         </div>
         `;
-        appendTypes(data.types);
-        stylecard(themeColor);
+    appendTypes(data.types);
+    stylecard(themeColor);
 };
+
 let appendTypes = (types) => {
     types.forEach((item) => {
         let span = document.createElement("SPAN");
@@ -73,11 +73,13 @@ let appendTypes = (types) => {
         document.querySelector(".types").appendChild(span);
     })
 };
+
 let stylecard = (color) => {
     card.style.background = `radial-gradient(circle at 50% 0%, ${color} 36%, #ffffff 36%)`;
     card.querySelectorAll(".types span").forEach(typeColor => {
         typeColor.style.backgroundColor = color
     });
-}
-btn.addEventListener("click", getPokeData);
-window.addEventListener("load", getPokeData);
+};
+
+searchBtn.addEventListener("click", searchPokemon);
+window.addEventListener("load", searchPokemon);
